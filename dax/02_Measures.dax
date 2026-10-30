@@ -1,0 +1,23 @@
+// REFERENCE DRAFT ONLY: Not verified as an exact export of the final PBIX model.
+// Synchronize with Power BI Desktop measures/columns before treating this as authoritative.
+
+// Create measures individually (Modeling > New measure).
+Total Sales = SUM ( FactFinancials[Sales] )
+Gross Sales = SUM ( FactFinancials[Gross Sales] )
+Total Discounts = SUM ( FactFinancials[Discounts] )
+Total COGS = SUM ( FactFinancials[COGS] )
+Total Profit = SUM ( FactFinancials[Profit] )
+Units Sold = SUM ( FactFinancials[Units Sold] )
+Profit Margin % = DIVIDE ( [Total Profit], [Total Sales] )
+Discount Rate % = DIVIDE ( [Total Discounts], [Gross Sales] )
+COGS Ratio % = DIVIDE ( [Total COGS], [Total Sales] )
+Sales per Unit = DIVIDE ( [Total Sales], [Units Sold] )
+Sales YTD = TOTALYTD ( [Total Sales], DimDate[Date] )
+Profit YTD = TOTALYTD ( [Total Profit], DimDate[Date] )
+Sales PY = CALCULATE ( [Total Sales], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+Profit PY = CALCULATE ( [Total Profit], SAMEPERIODLASTYEAR ( DimDate[Date] ) )
+Sales YoY % = IF ( NOT ISBLANK ( [Sales PY] ), DIVIDE ( [Total Sales] - [Sales PY], [Sales PY] ) )
+Profit YoY % = IF ( NOT ISBLANK ( [Profit PY] ), DIVIDE ( [Total Profit] - [Profit PY], [Profit PY] ) )
+Sales vs PY = [Total Sales] - [Sales PY]
+// CAUTION: Data covers Sep-Dec 2013 and Jan-Dec 2014; YoY is only comparable for overlapping months.
+// Use matched-period filters; blank previous-year values are expected in Jan-Aug 2014.

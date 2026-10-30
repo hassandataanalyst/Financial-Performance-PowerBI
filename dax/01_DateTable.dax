@@ -1,0 +1,16 @@
+// REFERENCE DRAFT ONLY: Not verified as an exact export of the final PBIX model.
+// Synchronize with Power BI Desktop measures/columns before treating this as authoritative.
+
+// Modeling > New table. Calendar extends to full years for predictable YTD / PY behavior.
+DimDate =
+ADDCOLUMNS (
+    CALENDAR ( DATE ( YEAR ( MIN ( FactFinancials[Date] ) ), 1, 1 ), DATE ( YEAR ( MAX ( FactFinancials[Date] ) ), 12, 31 ) ),
+    "Year", YEAR ( [Date] ),
+    "Month Number", MONTH ( [Date] ),
+    "Month Name", FORMAT ( [Date], "MMMM" ),
+    "Year Month", FORMAT ( [Date], "YYYY-MM" ),
+    "Year Month Sort", YEAR ( [Date] ) * 100 + MONTH ( [Date] ),
+    "Quarter", "Q" & FORMAT ( [Date], "Q" )
+)
+// Mark as date table (Date). Relationship DimDate[Date] (1) -> FactFinancials[Date] (*).
+// Sort DimDate[Month Name] by DimDate[Month Number]; Year Month by Year Month Sort.
